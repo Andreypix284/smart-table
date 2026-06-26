@@ -24,6 +24,7 @@ const compare = createComparison(
                     return false;
                 }
             }
+
             // Проверяем seller (продавец)
             if (state.seller && state.seller !== '') {
                 if (row.seller !== state.seller) {
@@ -39,26 +40,22 @@ const compare = createComparison(
 
 export function initFiltering(elements, indexes) {
     // @todo: #4.1 — заполнить выпадающие списки опциями
-    Object.keys(indexes)
-        .forEach((elementName) => {
-            if (elements[elementName]) {
-                // Сохраняем первую опцию "Все"
-                const firstOption = elements[elementName].querySelector('option[value=""]');
-                if (firstOption) {
-                    elements[elementName].innerHTML = '<option value="">Все</option>';
-                }
+    Object.keys(indexes).forEach((elementName) => {
+        const element = elements[elementName];
+        if (element) {
+            // Очищаем select и добавляем опцию "Все"
+            element.innerHTML = '<option value="">Все</option>';
 
-                elements[elementName].append(
-                    ...Object.values(indexes[elementName])
-                        .map(name => {
-                            const option = document.createElement('option');
-                            option.value = name;
-                            option.textContent = name;
-                            return option;
-                        })
-                );
-            }
-        });
+            // Добавляем опции из индексов
+            const values = Object.values(indexes[elementName]);
+            values.forEach(name => {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = name;
+                element.appendChild(option);
+            });
+        }
+    });
 
     return (data, state, action) => {
         // @todo: #4.2 — обработать очистку поля
@@ -76,15 +73,15 @@ export function initFiltering(elements, indexes) {
                     element.value = '';
                 }
 
-                // Сбрасываем в state
-                if (state[fieldName] !== undefined) {
-                    state[fieldName] = element.tagName === 'SELECT'
-                        ? element.options[0]?.value || ''
-                        : '';
+                // обновляем state
+                if (element.tagName === 'SELECT') {
+                    state[fieldName] = element.options[0]?.value || '';
+                } else {
+                    state[fieldName] = '';
                 }
             }
         }
         // @todo: #4.5 — отфильтровать данные используя компаратор
         return data.filter(row => compare(row, state));
-    }
-}  
+    };
+}

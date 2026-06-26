@@ -21,8 +21,8 @@ const { data, ...indexes } = initData(sourceData);
  */
 function collectState() {
     const state = processFormData(new FormData(sampleTable.container));
-    const rowsPerPage = parseInt(state.rowsPerPage);    // приведём количество страниц к числу
-    const page = parseInt(state.page ?? 1);
+    const rowsPerPage = parseInt(state.rowsPerPage) || 10;    // приведём количество страниц к числу
+    const page = parseInt(state.page) || 1;
     return {
         ...state,
         rowsPerPage,
@@ -51,22 +51,20 @@ function render(action) {
         });
         // Обновляем state после очистки
         state = collectState();
+        state.page = 1;
     }
-    
+
     result = applySearching(result, state, action);
     result = applyFiltering(result, state, action);
     result = applySorting(result, state, action);
-
     result = applyPagination(result, state, action);
-    const rowsPerPage = parseInt(state.rowsPerPage);    // приведём количество страниц к числу
-    const page = parseInt(state.page ?? 1);
-    // номер страницы по умолчанию 1 и тоже число
-    sampleTable.render(result)
+
+    sampleTable.render(result);
 
     return {                                            // расширьте существующий return вот так
         ...state,
-        rowsPerPage,
-        page
+        rowsPerPage: state.rowsPerPage,
+        page: state.page
     };
 }
 
@@ -77,30 +75,31 @@ const sampleTable = initTable({
     after: ['pagination']
 }, render);
 
-// @todo: инициализация
+// @todo: инициализация пагинации
 const applyPagination = initPagination(
     sampleTable.pagination.elements,             // передаём сюда элементы пагинации, найденные в шаблоне
     (el, page, isCurrent) => {                    // и колбэк, чтобы заполнять кнопки страниц данными
         const input = el.querySelector('input');
         const label = el.querySelector('span');
-        input.value = page;
-        input.checked = isCurrent;
-        label.textContent = page;
+        if (input) input.value = page;
+        if (input) input.checked = isCurrent;
+        if (label) label.textContent = page;
         return el;
     }
 );
-
+// Инициализация сортировки
 const applySorting = initSorting([
     sampleTable.header.elements.sortByDate,
     sampleTable.header.elements.sortByTotal
 ]);
-
-const applyFiltering = initFiltering(sampleTable.filter.elements, {    // передаём элементы фильтра
-    searchBySeller: indexes.sellers                                    // для элемента с именем searchBySeller устанавливаем массив продавцов
-});
-
+// Инициализация фильтрации
+const applyFiltering = initFiltering(
+    sampleTable.filter.elements,
+    { searchBySeller: indexes.sellers }
+);
+// Инициализация поиска
 const applySearching = initSearching('search');
-
+// Добавляем таблицу в DOM
 const appRoot = document.querySelector('#app');
 appRoot.appendChild(sampleTable.container);
 
