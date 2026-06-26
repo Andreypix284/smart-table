@@ -11,7 +11,7 @@ import { initTable } from "./components/table.js";
 import { initPagination } from './components/pagination.js';
 import { initSorting } from './components/sorting.js';
 import { initFiltering } from './components/filtering.js';
-import {initSearching} from './components/searching.js';
+import { initSearching } from './components/searching.js';
 // Исходные данные используемые в render()
 const { data, ...indexes } = initData(sourceData);
 
@@ -38,7 +38,22 @@ function render(action) {
     let state = collectState(); // состояние полей из таблицы
     let result = [...data]; // копируем для последующего изменения
     // @todo: использование
-    result = applySearching(result, state);
+    // Обработка сброса всех фильтров
+    if (action && action.name === 'reset-filters') {
+        // Находим все поля ввода в контейнере таблицы
+        const inputs = sampleTable.container.querySelectorAll('input, select');
+        inputs.forEach(input => {
+            if (input.type === 'text' || input.type === 'number' || input.type === 'search') {
+                input.value = '';
+            } else if (input.tagName === 'SELECT') {
+                input.selectedIndex = 0;
+            }
+        });
+        // Обновляем state после очистки
+        state = collectState();
+    }
+    
+    result = applySearching(result, state, action);
     result = applyFiltering(result, state, action);
     result = applySorting(result, state, action);
 
