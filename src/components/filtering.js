@@ -67,15 +67,13 @@ export function initFiltering(elements, indexes) {
                 const element = elements[fieldName];
 
                 // Сбрасываем значение
-                if (input.tagName === 'SELECT') {
-                    input.selectedIndex = 0;
+                if (element.tagName === 'SELECT') {
+                    element.selectedIndex = 0;
+                    state[fieldName] = element.options[0]?.value || '';
                 } else if (element.tagName === 'INPUT') {
                     element.value = '';
+                    state[fieldName] = '';
                 }
-                //обновляем state
-                state[fieldName] = element.tagName === 'SELECT'
-                    ? element.options[0]?.value || ''
-                    : '';
 
             }
         }
