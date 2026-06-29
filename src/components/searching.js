@@ -1,12 +1,29 @@
-import { rules, createComparison } from "../lib/compare.js";
+// export function initSearching(searchField) {
+//     return (data, state, action) => {
+//         // @todo: #5.2 — применить компаратор
+//         // Если поле поиска пустое или не существует, возвращаем все данные
+//         const searchValue = state[searchField];
+//         if (!searchValue || searchValue.trim() === '') {
+//             return data;
+//         }
+
+//         const searchLower = searchValue.toLowerCase().trim();
+        
+//         // Ручная фильтрация по нескольким полям
+//         return data.filter(row => {
+//             // Проверяем все поля, которые должны участвовать в поиске
+//             const fields = ['date', 'customer', 'seller'];
+            
+//             return fields.some(field => {
+//                 const value = row[field];
+//                 if (value === undefined || value === null) return false;
+//                 return String(value).toLowerCase().includes(searchLower);
+//             });
+//         });
+//     };
+// }
 
 export function initSearching(searchField) {
-    // @todo: #5.1 — настроить компаратор
-    // Создаем компаратор с правилами для поиска
-    const compare = createComparison(
-        [rules.searchMultipleFields(searchField, ['date', 'customer', 'seller'], false)]
-    );
-
     return (data, state, action) => {
         // @todo: #5.2 — применить компаратор
         // Если поле поиска пустое или не существует, возвращаем все данные
@@ -15,7 +32,18 @@ export function initSearching(searchField) {
             return data;
         }
 
-        // Применяем компаратор для поиска
-        return data.filter(row => compare(row, state));
+        const searchLower = searchValue.toLowerCase().trim();
+        
+        // Ручная фильтрация по нескольким полям
+        return data.filter(row => {
+            // Проверяем все поля, которые должны участвовать в поиске
+            const fields = ['date', 'customer', 'seller'];
+            
+            return fields.some(field => {
+                const value = row[field];
+                if (value === undefined || value === null) return false;
+                return String(value).toLowerCase().includes(searchLower);
+            });
+        });
     };
 }
