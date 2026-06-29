@@ -22,6 +22,7 @@
 //         });
 //     };
 // }
+import { createComparison } from "../lib/compare.js";
 
 export function initSearching(searchField) {
     return (data, state, action) => {

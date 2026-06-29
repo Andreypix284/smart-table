@@ -101,7 +101,7 @@
 //         });
 //     };
 // }
-
+import { createComparison } from "../lib/compare.js";
 
 export function initFiltering(elements, indexes) {
     // @todo: #4.1 — заполнить выпадающие списки опциями
@@ -146,8 +146,8 @@ export function initFiltering(elements, indexes) {
         // Проверяем, есть ли активные фильтры
         const hasActiveFilters = Object.keys(state).some(key => {
             const value = state[key];
-            // Проверяем только поля фильтрации - seller, totalFrom, totalTo
-            if (key === 'totalFrom' || key === 'totalTo' || key === 'seller') {
+            // Проверяем все поля фильтрации
+            if (key === 'totalFrom' || key === 'totalTo' || key === 'seller' || key === 'date' || key === 'customer') {
                 return value && value !== '' && value !== '0';
             }
             return false;
@@ -163,6 +163,20 @@ export function initFiltering(elements, indexes) {
             // Проверяем seller (продавец)
             if (state.seller && state.seller !== '') {
                 if (row.seller !== state.seller) {
+                    return false;
+                }
+            }
+
+            // Проверяем date (дата) - частичное совпадение
+            if (state.date && state.date !== '') {
+                if (!row.date || !row.date.includes(state.date)) {
+                    return false;
+                }
+            }
+
+            // Проверяем customer (покупатель) - частичное совпадение
+            if (state.customer && state.customer !== '') {
+                if (!row.customer || !row.customer.includes(state.customer)) {
                     return false;
                 }
             }
