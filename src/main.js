@@ -93,9 +93,12 @@ const applySorting = initSorting([
     sampleTable.header.elements.sortByTotal
 ]);
 // Инициализация фильтрации
-const applyFiltering = initFiltering(sampleTable.filter.elements, {    // передаём элементы фильтра
-    searchBySeller: indexes.sellers                                    // для элемента с именем searchBySeller устанавливаем массив продавцов
-});
+const applyFiltering = initFiltering(
+    sampleTable.filter.elements,
+    {
+        seller: indexes.sellers  // seller - правильное имя, совпадает с state.seller
+    }
+);
 // Инициализация поиска
 const applySearching = initSearching('search');
 // Добавляем таблицу в DOM
