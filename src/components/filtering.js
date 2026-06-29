@@ -32,11 +32,24 @@ const compare = createComparison(
                 }
             }
 
+            // Проверяем date (дата)
+            if (state.date && state.date !== '') {
+                if (!row.date || !row.date.includes(state.date)) {
+                    return false;
+                }
+            }
+
+            // Проверяем customer (покупатель)
+            if (state.customer && state.customer !== '') {
+                if (!row.customer || !row.customer.includes(state.customer)) {
+                    return false;
+                }
+            }
+
             return true;
         }
     ]
 );
-
 
 export function initFiltering(elements, indexes) {
     // @todo: #4.1 — заполнить выпадающие списки опциями
@@ -81,11 +94,12 @@ export function initFiltering(elements, indexes) {
 
             return data;
         }
+
         // @todo: #4.5 — отфильтровать данные используя компаратор
         // Проверяем, есть ли активные фильтры
         const hasActiveFilters = Object.keys(state).some(key => {
             const value = state[key];
-            if (key === 'totalFrom' || key === 'totalTo' || key === 'seller') {
+            if (key === 'totalFrom' || key === 'totalTo' || key === 'seller' || key === 'date' || key === 'customer') {
                 return value && value !== '' && value !== '0';
             }
             return false;

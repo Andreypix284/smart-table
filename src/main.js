@@ -53,7 +53,7 @@ function render(action) {
         state = collectState();
         state.page = 1;
     }
-
+    // Применяем модули в правильном порядке
     result = applySearching(result, state, action);
     result = applyFiltering(result, state, action);
     result = applySorting(result, state, action);
