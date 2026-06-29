@@ -8,7 +8,7 @@ const compare = createComparison(
         // Добавляем правило для диапазона чисел
         (state, row) => {
             // Проверяем totalFrom (минимальная сумма)
-            if (state.totalFrom && state.totalFrom !== '') {
+            if (state.totalFrom && state.totalFrom !== '' && state.totalFrom !== '0') {
                 const from = parseFloat(state.totalFrom);
                 const total = parseFloat(row.total);
                 if (!isNaN(from) && !isNaN(total) && total < from) {
@@ -17,7 +17,7 @@ const compare = createComparison(
             }
 
             // Проверяем totalTo (максимальная сумма)
-            if (state.totalTo && state.totalTo !== '') {
+            if (state.totalTo && state.totalTo !== '' && state.totalTo !== '0') {
                 const to = parseFloat(state.totalTo);
                 const total = parseFloat(row.total);
                 if (!isNaN(to) && !isNaN(total) && total > to) {
@@ -99,6 +99,7 @@ export function initFiltering(elements, indexes) {
         // Проверяем, есть ли активные фильтры
         const hasActiveFilters = Object.keys(state).some(key => {
             const value = state[key];
+            // Проверяем только поля фильтрации
             if (key === 'totalFrom' || key === 'totalTo' || key === 'seller' || key === 'date' || key === 'customer') {
                 return value && value !== '' && value !== '0';
             }
@@ -109,6 +110,7 @@ export function initFiltering(elements, indexes) {
         if (!hasActiveFilters) {
             return data;
         }
+
         // Применяем фильтрацию
         return data.filter(row => compare(row, state));
     };
