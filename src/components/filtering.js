@@ -1,3 +1,88 @@
+// import { createComparison, defaultRules } from "../lib/compare.js";
+
+// // @todo: #4.3 — настроить компаратор
+// // Создаем компаратор с правилами для фильтрации
+// const compare = createComparison(
+//     defaultRules,
+//     [
+//         // Добавляем правило для диапазона чисел
+//         (state, row) => {
+//             // Проверяем totalFrom (минимальная сумма)
+//             if (state.totalFrom && state.totalFrom !== '' && state.totalFrom !== '0') {
+//                 const from = parseFloat(state.totalFrom);
+//                 const total = parseFloat(row.total);
+//                 if (!isNaN(from) && !isNaN(total) && total <= from) {
+//                     return false;
+//                 }
+//             }
+
+//             // Проверяем totalTo (максимальная сумма)
+//             if (state.totalTo && state.totalTo !== '' && state.totalTo !== '0') {
+//                 const to = parseFloat(state.totalTo);
+//                 const total = parseFloat(row.total);
+//                 if (!isNaN(to) && !isNaN(total) && total >= to) {
+//                     return false;
+//                 }
+//             }
+
+//             // Проверяем seller (продавец)
+//             if (state.seller && state.seller !== '') {
+//                 if (row.seller !== state.seller) {
+//                     return false;
+//                 }
+//             }
+
+//             return true;
+//         }
+//     ]
+// );
+
+
+// export function initFiltering(elements, indexes) {
+//     // @todo: #4.1 — заполнить выпадающие списки опциями
+//     Object.keys(indexes).forEach((elementName) => {
+//         const element = elements[elementName];
+//         if (element) {
+//             // Очищаем select и добавляем опцию "Все"
+//             element.innerHTML = '<option value="">Все</option>';
+
+//             // Добавляем опции из индексов
+//             Object.values(indexes[elementName]).forEach(name => {
+//                 const option = document.createElement('option');
+//                 option.value = name;
+//                 option.textContent = name;
+//                 element.appendChild(option);
+//             });
+
+//         }
+//     });
+
+//     return (data, state, action) => {
+//         // @todo: #4.2 — обработать очистку поля
+//         if (action && action.name === 'clear') {
+//             const fieldName = action.dataset.field;
+
+//             // Находим соответствующий элемент фильтра
+//             if (fieldName && elements[fieldName]) {
+//                 const element = elements[fieldName];
+
+//                 // Сбрасываем значение
+//                 if (element.tagName === 'SELECT') {
+//                     element.selectedIndex = 0;
+//                     state[fieldName] = element.options[0]?.value || '';
+//                 } else if (element.tagName === 'INPUT') {
+//                     element.value = '';
+//                     state[fieldName] = '';
+//                 }
+
+//             }
+//         }
+//         // @todo: #4.5 — отфильтровать данные используя компаратор
+//         return data.filter(row => compare(row, state));
+//     };
+// }
+
+
 import { createComparison, defaultRules } from "../lib/compare.js";
 
 // @todo: #4.3 — настроить компаратор
@@ -8,7 +93,7 @@ const compare = createComparison(
         // Добавляем правило для диапазона чисел
         (state, row) => {
             // Проверяем totalFrom (минимальная сумма)
-            if (state.totalFrom && state.totalFrom !== '' && state.totalFrom !== '0') {
+            if (state.totalFrom && state.totalFrom !== '') {
                 const from = parseFloat(state.totalFrom);
                 const total = parseFloat(row.total);
                 if (!isNaN(from) && !isNaN(total) && total < from) {
@@ -17,7 +102,7 @@ const compare = createComparison(
             }
 
             // Проверяем totalTo (максимальная сумма)
-            if (state.totalTo && state.totalTo !== '' && state.totalTo !== '0') {
+            if (state.totalTo && state.totalTo !== '') {
                 const to = parseFloat(state.totalTo);
                 const total = parseFloat(row.total);
                 if (!isNaN(to) && !isNaN(total) && total > to) {
@@ -37,7 +122,6 @@ const compare = createComparison(
     ]
 );
 
-
 export function initFiltering(elements, indexes) {
     // @todo: #4.1 — заполнить выпадающие списки опциями
     Object.keys(indexes).forEach((elementName) => {
@@ -53,7 +137,6 @@ export function initFiltering(elements, indexes) {
                 option.textContent = name;
                 element.appendChild(option);
             });
-
         }
     });
 
@@ -74,10 +157,18 @@ export function initFiltering(elements, indexes) {
                     element.value = '';
                     state[fieldName] = '';
                 }
-
             }
         }
+
         // @todo: #4.5 — отфильтровать данные используя компаратор
-        return data.filter(row => compare(row, state));
+        // Проверяем, что state не пустой, и применяем фильтрацию
+        const hasFilters = Object.values(state).some(value => value && value !== '');
+        
+        if (!hasFilters) {
+            return data;
+        }
+
+        // Передаем state и row в правильном порядке
+        return data.filter(row => compare(state, row));
     };
 }
