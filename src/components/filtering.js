@@ -139,6 +139,7 @@ export function initFiltering(elements, indexes) {
                 }
             }
 
+            // Возвращаем все данные после очистки
             return data;
         }
 
@@ -158,9 +159,9 @@ export function initFiltering(elements, indexes) {
             return data;
         }
 
-        // Ручная фильтрация данных
+        // Фильтрация данных
         return data.filter(row => {
-            // Проверяем seller (продавец)
+            // Проверяем seller (продавец) - точное совпадение
             if (state.seller && state.seller !== '') {
                 if (row.seller !== state.seller) {
                     return false;

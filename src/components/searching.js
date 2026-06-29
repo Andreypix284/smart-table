@@ -35,9 +35,8 @@ export function initSearching(searchField) {
 
         const searchLower = searchValue.toLowerCase().trim();
         
-        // Ручная фильтрация по нескольким полям
+        // Фильтрация по нескольким полям
         return data.filter(row => {
-            // Проверяем все поля, которые должны участвовать в поиске
             const fields = ['date', 'customer', 'seller'];
             
             return fields.some(field => {

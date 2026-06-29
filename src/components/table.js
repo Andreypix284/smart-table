@@ -36,7 +36,7 @@ export function initTable(settings, onAction) {
 
     // Обработка события reset
     root.container.addEventListener('reset', (e) => {
-        e.preventDefault(); // Предотвращаем стандартный сброс формы
+        // e.preventDefault(); // Предотвращаем стандартный сброс формы
         setTimeout(() => onAction(), 0);
     });
 
