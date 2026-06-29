@@ -71,13 +71,14 @@ export function initFiltering(elements, indexes) {
                 // Сбрасываем значение
                 if (element.tagName === 'SELECT') {
                     element.selectedIndex = 0;
-                    state[fieldName] = element.options[0]?.value || '';
+                    state[fieldName] = '';
                 } else if (element.tagName === 'INPUT') {
                     element.value = '';
                     state[fieldName] = '';
                 }
 
             }
+
             return data;
         }
         // @todo: #4.5 — отфильтровать данные используя компаратор
@@ -95,6 +96,6 @@ export function initFiltering(elements, indexes) {
             return data;
         }
         // Применяем фильтрацию
-        return data.filter(row => compare(state, row));
+        return data.filter(row => compare(row, state));
     };
 }

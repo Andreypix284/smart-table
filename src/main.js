@@ -99,9 +99,11 @@ const applyFiltering = initFiltering(
         seller: indexes.sellers  // seller - правильное имя, совпадает с state.seller
     }
 );
+
 // Инициализация поиска
 const applySearching = initSearching('search');
 // Добавляем таблицу в DOM
+
 const appRoot = document.querySelector('#app');
 appRoot.appendChild(sampleTable.container);
 
