@@ -44,18 +44,8 @@ export function initFiltering(elements, indexes) {
         const element = elements[elementName];
         if (element) {
             // Очищаем select и добавляем опцию "Все"
-            const firstOption = element.querySelector('option[value=""]');
-            // Очищаем select
-            element.innerHTML = '';
+            element.innerHTML = '<option value="">Все</option>';
 
-            if (firstOption) {
-                element.appendChild(firstOption);
-            } else {
-                const optionAll = document.createElement('option');
-                optionAll.value = '';
-                optionAll.textContent = 'Все';
-                element.appendChild(optionAll);
-            }
             // Добавляем опции из индексов
             Object.values(indexes[elementName]).forEach(name => {
                 const option = document.createElement('option');
@@ -76,22 +66,17 @@ export function initFiltering(elements, indexes) {
             if (fieldName && elements[fieldName]) {
                 const element = elements[fieldName];
 
-                // Находим родительский элемент кнопки
-                const parent = action.closest('.filter-group') || action.parentElement;
-                // Ищем input внутри родительского элемента
-                const input = parent?.querySelector('input, select');
-
-                if (input) {
-                    // Сбрасываем значение
-                    if (input.tagName === 'SELECT') {
-                        input.selectedIndex = 0;
-                    } else {
-                        input.value = '';
-                    }
-                    state[fieldName] = input.tagName === 'SELECT'
-                        ? input.options[0]?.value || ''
-                        : '';
+                // Сбрасываем значение
+                if (input.tagName === 'SELECT') {
+                    input.selectedIndex = 0;
+                } else if (element.tagName === 'INPUT') {
+                    element.value = '';
                 }
+                //обновляем state
+                state[fieldName] = element.tagName === 'SELECT'
+                    ? element.options[0]?.value || ''
+                    : '';
+
             }
         }
         // @todo: #4.5 — отфильтровать данные используя компаратор
