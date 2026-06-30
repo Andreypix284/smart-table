@@ -12,7 +12,7 @@ export function initTable(settings, onAction) {
     const root = cloneTemplate(tableTemplate);
 
     // @todo: #1.2 —  вывести дополнительные шаблоны до и после таблицы
-    // Шаблоны до таблицы (в обратном порядке для prepend)
+    // Шаблоны до таблицы(в обратном порядке для prepend)
     if (before && before.length > 0) {
         [...before].reverse().forEach(subName => {
             root[subName] = cloneTemplate(subName);
@@ -36,7 +36,7 @@ export function initTable(settings, onAction) {
 
     // Обработка события reset
     root.container.addEventListener('reset', (e) => {
-        // e.preventDefault(); // Предотвращаем стандартный сброс формы
+        e.preventDefault(); // Предотвращаем стандартный сброс формы
         setTimeout(() => onAction(), 0);
     });
 
